@@ -4,7 +4,8 @@ from .views import (
     PlayViewSet,
     PerformanceViewSet,
     TheatreHallViewSet,
-    ReservationViewSet
+    ReservationViewSet,
+    CreateTokenView
 )
 
 router = DefaultRouter()
@@ -15,4 +16,5 @@ router.register("reservations", ReservationViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("token/", CreateTokenView.as_view(), name="token_obtain"),
 ]
