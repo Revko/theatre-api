@@ -11,15 +11,18 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
 
+
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         fields = "__all__"
 
+
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = "__all__"
+
 
 class PlaySerializer(serializers.ModelSerializer):
     actors = ActorSerializer(many=True)
@@ -29,15 +32,18 @@ class PlaySerializer(serializers.ModelSerializer):
         model = Play
         fields = "__all__"
 
+
 class TheatreHallSerializer(serializers.ModelSerializer):
     class Meta:
         model = TheatreHall
         fields = "__all__"
 
+
 class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
         fields = "__all__"
+
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,12 +52,11 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if Ticket.objects.filter(
-            performance=data["performance"],
-            row=data["row"],
-            seat=data["seat"]
+            performance=data["performance"], row=data["row"], seat=data["seat"]
         ).exists():
             raise serializers.ValidationError("Seat is already taken.")
         return data
+
 
 class ReservationSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, write_only=True)
@@ -70,19 +75,26 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 class AuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    password = serializers.CharField(style={"input_type": "password"}, trim_whitespace=False)
+    password = serializers.CharField(
+        style={"input_type": "password"}, trim_whitespace=False
+    )
 
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
 
-        user = authenticate(request=self.context.get("request"), email=email, password=password)
+        user = authenticate(
+            request=self.context.get("request"), email=email, password=password
+        )
 
         if not user:
-            raise serializers.ValidationError("Invalid credentials", code="authorization")
+            raise serializers.ValidationError(
+                "Invalid credentials", code="authorization"
+            )
 
         attrs["user"] = user
         return attrs
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

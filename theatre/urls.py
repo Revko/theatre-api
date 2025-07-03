@@ -5,7 +5,7 @@ from .views import (
     PerformanceViewSet,
     TheatreHallViewSet,
     ReservationViewSet,
-    CreateTokenView
+    CreateTokenView,
 )
 
 router = DefaultRouter()
