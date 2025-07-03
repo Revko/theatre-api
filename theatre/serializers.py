@@ -1,0 +1,58 @@
+from rest_framework import serializers
+from .models import *
+
+class ActorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = "__all__"
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = "__all__"
+
+class PlaySerializer(serializers.ModelSerializer):
+    actors = ActorSerializer(many=True)
+    genres = GenreSerializer(many=True)
+
+    class Meta:
+        model = Play
+        fields = "__all__"
+
+class TheatreHallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TheatreHall
+        fields = "__all__"
+
+class PerformanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Performance
+        fields = "__all__"
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = "__all__"
+
+    def validate(self, data):
+        if Ticket.objects.filter(
+            performance=data["performance"],
+            row=data["row"],
+            seat=data["seat"]
+        ).exists():
+            raise serializers.ValidationError("Seat is already taken.")
+        return data
+
+class ReservationSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, write_only=True)
+
+    class Meta:
+        model = Reservation
+        fields = ("id", "created_at", "tickets")
+
+    def create(self, validated_data):
+        tickets_data = validated_data.pop("tickets")
+        reservation = Reservation.objects.create(**validated_data)
+        for ticket in tickets_data:
+            Ticket.objects.create(reservation=reservation, **ticket)
+        return reservation
