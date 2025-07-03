@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# Environment
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Migrations
+*/migrations/
+!*/migrations/__init__.py
+
+# MyPy / Pyright
+.mypy_cache/
+.pyright/
+
+# Pytest
+.pytest_cache/
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Others
+*.swp
+*.swo
+*.bak
+*.orig
+*.tmp
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+.cache
+
+# IDEs
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
