@@ -1,5 +1,15 @@
+from .models import (
+    Actor,
+    Genre,
+    Play,
+    TheatreHall,
+    Performance,
+    Ticket,
+    Reservation
+)
+from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import *
+from .models import User
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,3 +66,25 @@ class ReservationSerializer(serializers.ModelSerializer):
         for ticket in tickets_data:
             Ticket.objects.create(reservation=reservation, **ticket)
         return reservation
+
+
+class AuthTokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(style={"input_type": "password"}, trim_whitespace=False)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        user = authenticate(request=self.context.get("request"), email=email, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Invalid credentials", code="authorization")
+
+        attrs["user"] = user
+        return attrs
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "email")
